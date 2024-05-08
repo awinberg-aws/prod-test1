@@ -10,6 +10,14 @@ const schema = a.schema({
   Todo: a
     .model({
       content: a.string(),
+      listId: a.id(),
+      list: a.belongsTo('List', 'listId'),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+  List: a
+    .model({
+      title: a.string(),
+      todos: a.hasMany('Todo', 'listId'),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });
