@@ -12,15 +12,32 @@ const schema = a.schema({
       content: a.string(),
       listId: a.id(),
       list: a.belongsTo('List', 'listId'),
-    })
-    .authorization((allow) => [allow.publicApiKey()]),
+    }),
   List: a
     .model({
       title: a.string(),
       todos: a.hasMany('Todo', 'listId'),
-    })
-    .authorization((allow) => [allow.publicApiKey()]),
-});
+    }),
+
+    Post: a.model({
+      title: a.string().required(),
+      content: a.string().required(),
+      // You must supply an author when creating the post
+      // Author can't be set to `null`.
+      authorId: a.id().required(),
+      author: a.belongsTo('Person', 'authorId'),
+      // You can optionally supply an editor when creating the post.
+      // Editor can also be set to `null`.
+      editorId: a.id(),
+      editor: a.belongsTo('Person', 'editorId'),
+    }),
+    Person: a.model({
+      name: a.string(),
+      editedPosts: a.hasMany('Post', 'editorId'),
+      authoredPosts: a.hasMany('Post', 'authorId'),
+    }),
+
+}).authorization(allow => [allow.publicApiKey()]);
 
 export type Schema = ClientSchema<typeof schema>;
 
