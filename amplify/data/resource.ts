@@ -19,23 +19,45 @@ const schema = a.schema({
       todos: a.hasMany('Todo', 'listId'),
     }),
 
-    Post: a.model({
-      title: a.string().required(),
-      content: a.string().required(),
-      // You must supply an author when creating the post
-      // Author can't be set to `null`.
-      authorId: a.id().required(),
-      author: a.belongsTo('Person', 'authorId'),
-      // You can optionally supply an editor when creating the post.
-      // Editor can also be set to `null`.
-      editorId: a.id(),
-      editor: a.belongsTo('Person', 'editorId'),
-    }),
-    Person: a.model({
-      name: a.string(),
-      editedPosts: a.hasMany('Post', 'editorId'),
-      authoredPosts: a.hasMany('Post', 'authorId'),
-    }),
+  Post: a.model({
+    title: a.string().required(),
+    content: a.string().required(),
+    // You must supply an author when creating the post
+    // Author can't be set to `null`.
+    authorId: a.id().required(),
+    author: a.belongsTo('Person', 'authorId'),
+    // You can optionally supply an editor when creating the post.
+    // Editor can also be set to `null`.
+    editorId: a.id(),
+    editor: a.belongsTo('Person', 'editorId'),
+  }),
+  Person: a.model({
+    name: a.string(),
+    editedPosts: a.hasMany('Post', 'editorId'),
+    authoredPosts: a.hasMany('Post', 'authorId'),
+  }),
+
+  Vehicle: a.model({
+    model: a.string().required(),
+    titleId: a.id().required(),
+    title: a.hasOne('Title', 'titleId'),
+  }),
+  Title: a.model({
+    notes: a.string(),
+    vehicleId: a.id(),
+    vehicle: a.belongsTo('Vehicle', 'vehicleId'),
+  }),
+
+  MutualVehicle: a.model({
+    model: a.string().required(),
+    titleId: a.id().required(),
+    title: a.hasOne('MutualTitle', 'titleId'),
+  }),
+  MutualTitle: a.model({
+    notes: a.string(),
+    vehicleId: a.id().required(),
+    vehicle: a.belongsTo('MutualVehicle', 'vehicleId'),
+  }),
 
 }).authorization(allow => [allow.publicApiKey()]);
 
