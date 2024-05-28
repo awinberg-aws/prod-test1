@@ -40,7 +40,7 @@ const schema = a.schema({
   Vehicle: a.model({
     model: a.string().required(),
     titleId: a.id().required(),
-    title: a.hasOne('Title', 'titleId'),
+    title: a.hasOne('Title', 'id'),
   }),
   Title: a.model({
     notes: a.string(),
@@ -51,7 +51,7 @@ const schema = a.schema({
   MutualVehicle: a.model({
     model: a.string().required(),
     titleId: a.id().required(),
-    title: a.hasOne('MutualTitle', 'titleId'),
+    title: a.hasOne('MutualTitle', 'id'),
   }),
   MutualTitle: a.model({
     notes: a.string(),
