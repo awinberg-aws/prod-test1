@@ -37,26 +37,19 @@ const schema = a.schema({
     authoredPosts: a.hasMany('Post', 'authorId'),
   }),
 
-  Vehicle: a.model({
-    model: a.string().required(),
-    titleId: a.id().required(),
-    title: a.hasOne('Title', 'id'),
-  }),
-  Title: a.model({
-    notes: a.string(),
-    vehicleId: a.id(),
-    vehicle: a.belongsTo('Vehicle', 'vehicleId'),
+  Member: a.model({
+    name: a.string().required(),
+    // 1. Create a reference field
+    teamId: a.id(),
+    // 2. Create a belongsTo relationship with the reference field
+    team: a.belongsTo('Team', 'teamId'),
   }),
 
-  MutualVehicle: a.model({
-    model: a.string().required(),
-    titleId: a.id().required(),
-    title: a.hasOne('MutualTitle', 'id'),
-  }),
-  MutualTitle: a.model({
-    notes: a.string(),
-    vehicleId: a.id().required(),
-    vehicle: a.belongsTo('MutualVehicle', 'vehicleId'),
+  Team: a.model({
+    mantra: a.string().required(),
+    // 3. Create a hasMany relationship with the reference field
+    //    from the `Member`s model.
+    members: a.hasMany('Member', 'teamId'),
   }),
 
 }).authorization(allow => [allow.publicApiKey()]);
