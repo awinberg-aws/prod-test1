@@ -52,6 +52,35 @@ const schema = a.schema({
     members: a.hasMany('Member', 'teamId'),
   }),
 
+  // custom key example
+  User: a
+    .model({
+      id: a.id().required(),
+      birthdate: a.string().required(),
+      firstName: a.string().required(),
+      lastName: a.string().required(),
+      username: a.string().required(),
+      phoneNumber: a.hasOne("PhoneNumber", "userId"),
+    })
+    .secondaryIndexes((index) => [
+      index("firstName").queryField("listUsersBySearchTerm").sortKeys(["id"]),
+    ]),
+
+  PhoneNumber: a
+    .model({
+      phoneNumber: a.string().required(),
+      userId: a.string().required(),
+      user: a.belongsTo("User", "userId"),
+    })
+    .identifier(["phoneNumber"]),
+
+  CustomKeyTest: a
+    .model({
+      myKey: a.string().required(),
+      description: a.string().required(),
+    })
+    .identifier(['myKey']),
+
 }).authorization(allow => [allow.publicApiKey()]);
 
 export type Schema = ClientSchema<typeof schema>;
