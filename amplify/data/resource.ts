@@ -81,6 +81,17 @@ const schema = a.schema({
     })
     .identifier(['myKey']),
 
+  ExplicitPkSk: a.model({
+      id: a.id().required(),
+      sk: a.string().required()
+    }).identifier(['id', 'sk']),
+  
+  ExplicitPkSkSk: a.model({
+      id: a.id().required(),
+      sk: a.string().required(),
+      sk2: a.string().required(),
+    }).identifier(['id', 'sk', 'sk2']),
+
 }).authorization(allow => [allow.publicApiKey()]);
 
 export type Schema = ClientSchema<typeof schema>;
