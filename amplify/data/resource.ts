@@ -92,6 +92,24 @@ const schema = a.schema({
       sk2: a.string().required(),
     }).identifier(['id', 'sk', 'sk2']),
 
+  Pizza: a.model({
+    customerName: a.string().required(),
+    toppings: a.hasMany('PizzaTopping', 'pizzaId'),
+  }),
+
+  Topping: a.model({
+    name: a.string().required(),
+    pizzas: a.hasMany('PizzaTopping', 'toppingId'),
+  }),
+
+  PizzaTopping: a.model({
+    pizzaId: a.id().required(),
+    toppingId: a.id().required(),
+
+    pizza: a.belongsTo('Pizza', 'pizzaId'),
+    topping: a.belongsTo('Topping', 'toppingId'),
+  }),
+
 }).authorization(allow => [allow.publicApiKey()]);
 
 export type Schema = ClientSchema<typeof schema>;
