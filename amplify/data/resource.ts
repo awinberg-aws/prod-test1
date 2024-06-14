@@ -16,9 +16,9 @@ const schema = a.schema({
   setTTL: a
     .mutation()
     .arguments({id: a.id()})
-    .returns(a.ref('AllTypes'))
+    .returns(a.ref('Message'))
     .handler(a.handler.custom({
-      dataSource: a.ref('AllTypes'),
+      dataSource: a.ref('Message'),
       entry: './setTTL.js',
     })),
 
