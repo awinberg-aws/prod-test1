@@ -7,108 +7,20 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
+  Message: a
     .model({
       content: a.string(),
-      listId: a.id(),
-      list: a.belongsTo('List', 'listId'),
-    }),
-  List: a
-    .model({
-      title: a.string(),
-      todos: a.hasMany('Todo', 'listId'),
+      ttl: a.timestamp(),
     }),
 
-  Post: a.model({
-    title: a.string().required(),
-    content: a.string().required(),
-    // You must supply an author when creating the post
-    // Author can't be set to `null`.
-    authorId: a.id().required(),
-    author: a.belongsTo('Person', 'authorId'),
-    // You can optionally supply an editor when creating the post.
-    // Editor can also be set to `null`.
-    editorId: a.id(),
-    editor: a.belongsTo('Person', 'editorId'),
-  }),
-  Person: a.model({
-    name: a.string(),
-    editedPosts: a.hasMany('Post', 'editorId'),
-    authoredPosts: a.hasMany('Post', 'authorId'),
-  }),
-
-  Member: a.model({
-    name: a.string().required(),
-    // 1. Create a reference field
-    teamId: a.id(),
-    // 2. Create a belongsTo relationship with the reference field
-    team: a.belongsTo('Team', 'teamId'),
-  }),
-
-  Team: a.model({
-    mantra: a.string().required(),
-    // 3. Create a hasMany relationship with the reference field
-    //    from the `Member`s model.
-    members: a.hasMany('Member', 'teamId'),
-  }),
-
-  // custom key example
-  User: a
-    .model({
-      id: a.id().required(),
-      birthdate: a.string().required(),
-      firstName: a.string().required(),
-      lastName: a.string().required(),
-      username: a.string().required(),
-      phoneNumber: a.hasOne("PhoneNumber", "userId"),
-    })
-    .secondaryIndexes((index) => [
-      index("firstName").queryField("listUsersBySearchTerm").sortKeys(["id"]),
-    ]),
-
-  PhoneNumber: a
-    .model({
-      phoneNumber: a.string().required(),
-      userId: a.string().required(),
-      user: a.belongsTo("User", "userId"),
-    })
-    .identifier(["phoneNumber"]),
-
-  CustomKeyTest: a
-    .model({
-      myKey: a.string().required(),
-      description: a.string().required(),
-    })
-    .identifier(['myKey']),
-
-  ExplicitPkSk: a.model({
-      id: a.id().required(),
-      sk: a.string().required()
-    }).identifier(['id', 'sk']),
-  
-  ExplicitPkSkSk: a.model({
-      id: a.id().required(),
-      sk: a.string().required(),
-      sk2: a.string().required(),
-    }).identifier(['id', 'sk', 'sk2']),
-
-  Pizza: a.model({
-    customerName: a.string().required(),
-    toppings: a.hasMany('PizzaTopping', 'pizzaId'),
-  }),
-
-  Topping: a.model({
-    name: a.string().required(),
-    pizzas: a.hasMany('PizzaTopping', 'toppingId'),
-  }),
-
-  PizzaTopping: a.model({
-    pizzaId: a.id().required(),
-    toppingId: a.id().required(),
-
-    pizza: a.belongsTo('Pizza', 'pizzaId'),
-    topping: a.belongsTo('Topping', 'toppingId'),
-  }),
+  setTTL: a
+    .mutation()
+    .arguments({id: a.id()})
+    .returns(a.ref('AllTypes'))
+    .handler(a.handler.custom({
+      dataSource: a.ref('AllTypes'),
+      entry: './setTTL.js',
+    })),
 
 }).authorization(allow => [allow.publicApiKey()]);
 
