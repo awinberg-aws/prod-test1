@@ -17,6 +17,7 @@ const schema = a.schema({
     .mutation()
     .arguments({id: a.id()})
     .returns(a.ref('Message'))
+    .authorization((allow) => [allow.publicApiKey()])
     .handler(a.handler.custom({
       dataSource: a.ref('Message'),
       entry: './setTTL.js',
