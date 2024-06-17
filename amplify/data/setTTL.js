@@ -6,7 +6,7 @@ export function request(ctx) {
     key: util.dynamodb.toMapValues({ id: ctx.args.id}),
     update: {
       expression: 'SET ttl = :ttl',
-      expressionValues: { ':ttl': { N: Date.now() + 36000 } },
+      expressionValues: { ':ttl': { N: util.time.nowEpochMilliSeconds() + 36000 } },
     }
   }
 }
